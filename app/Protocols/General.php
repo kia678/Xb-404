@@ -9,7 +9,7 @@ use App\Support\AbstractProtocol;
 
 class General extends AbstractProtocol
 {
-    public $flags = ['general', 'v2rayn', 'v2rayng', 'passwall', 'ssrplus', 'sagernet'];
+    public $flags = ['general', 'v2rayn', 'v2rayng','v2raya', 'passwall', 'ssrplus', 'sagernet'];
 
     public $allowedProtocols = [
         Server::TYPE_VMESS,
@@ -92,8 +92,8 @@ class General extends AbstractProtocol
                     $config['type'] = data_get($protocol_settings, 'network_settings.header.type', 'http');
                     $config['path'] = Arr::random(data_get($protocol_settings, 'network_settings.header.request.path', ['/']));
                     $config['host'] =
-                        data_get($protocol_settings, 'network_settings.header.request.headers.Host')
-                        ? Arr::random(data_get($protocol_settings, 'network_settings.header.request.headers.Host', ['/']), )
+                        data_get($protocol_settings, 'network_settings.headers.Host')
+                        ? Arr::random(data_get($protocol_settings, 'network_settings.headers.Host', ['/']), )
                         : null;
                 }
                 break;
@@ -135,6 +135,8 @@ class General extends AbstractProtocol
                 $config['security'] = "tls";
                 if ($serverName = data_get($protocol_settings, 'tls_settings.server_name')) {
                     $config['sni'] = $serverName;
+                    $config['fp'] = "chrome";
+                    $config['allowInsecure'] = true;
                 }
                 break;
             case 2: //reality
@@ -191,6 +193,8 @@ class General extends AbstractProtocol
         $protocol_settings = $server['protocol_settings'];
         $name = rawurlencode($server['name']);
         $array = [];
+        $array['mode'] = 'multi';
+        $array['fp'] = 'chrome';
         $array['allowInsecure'] = $protocol_settings['allow_insecure'];
         if ($serverName = data_get($protocol_settings, 'server_name')) {
             $array['peer'] = $serverName;
