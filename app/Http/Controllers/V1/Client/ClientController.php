@@ -193,9 +193,19 @@ class ClientController extends Controller
     {
         if (!isset($servers[0]))
             return;
+
+        // 添加 邮箱名 节点线路，防止用户忘记账号邮箱
+        $userEmail =$user->email;
+        array_unshift($servers, array_merge($servers[0], [
+            'name' => "🇭🇰ID你的账号：{$userEmail}",
+        ]));
+        array_unshift($servers, array_merge($servers[0], [
+            'name' => "🇭🇰注意流量&期限👈👆",
+        ]));
+        
         if ($rejectServerCount > 0) {
             array_unshift($servers, array_merge($servers[0], [
-                'name' => "过滤掉{$rejectServerCount}条线路",
+                'name' => "🇭🇰过滤掉{$rejectServerCount}条线路",
             ]));
         }
         if (!(int) admin_setting('show_info_to_server_enable', 0))
@@ -207,15 +217,15 @@ class ClientController extends Controller
         $userService = new UserService();
         $resetDay = $userService->getResetDay($user);
         array_unshift($servers, array_merge($servers[0], [
-            'name' => "套餐到期：{$expiredDate}",
+            'name' => "🇭🇰套餐到期：{$expiredDate}",
         ]));
         if ($resetDay) {
             array_unshift($servers, array_merge($servers[0], [
-                'name' => "距离下次重置剩余：{$resetDay} 天",
+                'name' => "🇭🇰距离下次重置剩余：{$resetDay} 天",
             ]));
         }
         array_unshift($servers, array_merge($servers[0], [
-            'name' => "剩余流量：{$remainingTraffic}",
+            'name' => "🇭🇰剩余流量：{$remainingTraffic}",
         ]));
     }
 
