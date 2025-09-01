@@ -24,8 +24,10 @@ class Clash extends AbstractProtocol
     {
         $servers = $this->servers;
         $user = $this->user;
-        $appName = admin_setting('app_name', 'XBoard');
-
+        header('profile-update-interval: 1');
+        $appName = '客服 nplus521@gmail.com';
+        //$appName = $this->user->email;
+        
         // 优先从数据库配置中获取模板
         $template = admin_setting('subscribe_template_clash', File::exists(base_path(self::CUSTOM_TEMPLATE_FILE))
             ? File::get(base_path(self::CUSTOM_TEMPLATE_FILE))
@@ -103,7 +105,7 @@ class Clash extends AbstractProtocol
         return response($yaml)
             ->header('content-type', 'text/yaml')
             ->header('subscription-userinfo', "upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}")
-            ->header('profile-update-interval', '24')
+            ->header('profile-update-interval', '1')
             ->header('content-disposition', 'attachment;filename*=UTF-8\'\'' . rawurlencode($appName))
             ->header('profile-web-page-url', admin_setting('app_url'));
     }
@@ -205,7 +207,7 @@ class Clash extends AbstractProtocol
                 if (data_get($protocol_settings, 'network_settings.header.type', 'none') !== 'none') {
                     $array['http-opts'] = [
                         'headers' => data_get($protocol_settings, 'network_settings.header.request.headers'),
-                        'path' => data_get($protocol_settings, 'network_settings.header.request.path', ['/'])
+                        'path' => \Illuminate\Support\Arr::random(data_get($protocol_settings, 'network_settings.header.request.path', ['/']))
                     ];
                 }
                 break;
