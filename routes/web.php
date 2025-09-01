@@ -87,3 +87,6 @@ Route::get('/' . admin_setting('secure_path', admin_setting('frontend_admin_path
 Route::get('/' . (admin_setting('subscribe_path', 's')) . '/{token}', [\App\Http\Controllers\V1\Client\ClientController::class, 'subscribe'])
     ->middleware('client')
     ->name('client.subscribe');
+//兼容旧版ssp的 /link/ 格式订阅链接
+Route::get('/link/{token}', [\App\Http\Controllers\V1\Client\ClientController::class, 'subscribe'])
+    ->middleware('client');
