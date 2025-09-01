@@ -63,8 +63,10 @@ class ClashMeta extends AbstractProtocol
     {
         $servers = $this->servers;
         $user = $this->user;
-        $appName = admin_setting('app_name', 'XBoard');
-
+        header('profile-update-interval: 1');
+        $appName = '客服 nplus521@gmail.com';
+        //$appName = $this->user->email;
+        
         $template = admin_setting('subscribe_template_clashmeta', File::exists(base_path(self::CUSTOM_TEMPLATE_FILE))
             ? File::get(base_path(self::CUSTOM_TEMPLATE_FILE))
             : (
@@ -153,7 +155,7 @@ class ClashMeta extends AbstractProtocol
         return response($yaml)
             ->header('content-type', 'text/yaml')
             ->header('subscription-userinfo', "upload={$user['u']}; download={$user['d']}; total={$user['transfer_enable']}; expire={$user['expired_at']}")
-            ->header('profile-update-interval', '24')
+            ->header('profile-update-interval', '1')
             ->header('content-disposition', 'attachment;filename*=UTF-8\'\'' . rawurlencode($appName));
     }
 
@@ -263,7 +265,7 @@ class ClashMeta extends AbstractProtocol
                 if (data_get($protocol_settings, 'network_settings.header.type', 'none') !== 'none') {
                     $array['http-opts'] = [
                         'headers' => data_get($protocol_settings, 'network_settings.header.request.headers'),
-                        'path' => data_get($protocol_settings, 'network_settings.header.request.path', ['/'])
+                        'path' => \Illuminate\Support\Arr::random(data_get($protocol_settings, 'network_settings.header.request.path', ['/']))
                     ];
                 }
                 break;
@@ -297,7 +299,8 @@ class ClashMeta extends AbstractProtocol
             'uuid' => $password,
             'alterId' => 0,
             'cipher' => 'auto',
-            'udp' => true,
+            'udp' => false,
+            'client-fingerprint' => 'chrome',
             'flow' => data_get($protocol_settings, 'flow'),
             'tls' => false
         ];
@@ -353,7 +356,8 @@ class ClashMeta extends AbstractProtocol
             'server' => $server['host'],
             'port' => $server['port'],
             'password' => $password,
-            'udp' => true,
+            'udp' => false,
+            'client-fingerprint' => 'chrome',
             'skip-cert-verify' => (bool) data_get($protocol_settings, 'allow_insecure', false)
         ];
         if ($serverName = data_get($protocol_settings, 'server_name')) {
@@ -466,7 +470,8 @@ class ClashMeta extends AbstractProtocol
             'server' => $server['host'],
             'port' => $server['port'],
             'password' => $password,
-            'udp' => true,
+            'client-fingerprint' => 'chrome',
+            'udp' => false,
         ];
 
         if ($serverName = data_get($protocol_settings, 'tls.server_name')) {
