@@ -229,7 +229,7 @@ class Shadowrocket extends AbstractProtocol
         $query = http_build_query($params);
         $addr = Helper::wrapIPv6($server['host']);
 
-        $uri = "trojan://{$password}@{$addr}:{$server['port']}?{$query}&tfo=1#{$name}";
+        $uri = "trojan://{$password}@{$addr}:{$server['port']}?{$query}&tfo=0&udp=0#{$name}";
         $uri .= "\r\n";
         return $uri;
     }
@@ -318,6 +318,8 @@ class Shadowrocket extends AbstractProtocol
         $protocol_settings = $server['protocol_settings'];
         $name = rawurlencode($server['name']);
         $params = [
+            'udp' => false,
+            'alpn' => 'h2,http/1.1',
             'sni' => data_get($protocol_settings, 'tls.server_name'),
             'insecure' => data_get($protocol_settings, 'tls.allow_insecure')
         ];
